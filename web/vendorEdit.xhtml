@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title> Administration Editor </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <h1> Duke's Bookstore </h1>
+        <h:form>
+            <h:dataTable border="1" value="#{administrations.supplier}" var="supplier"
+         rowClasses="oddTableRow,evenTableRow" headerClass="tableHeader"
+         styleClass="table" cellpadding="5" cellspacing="0">
+        <h:column>
+            <f:facet name="header">Options</f:facet>
+            <h:link  value = "edit" outcome="vendorChange?id=#{administrations.supplier.indexOf(supplier)}&amp;businessID=#{supplier.businessID}&amp;contactName=#{supplier.contactName}
+                     &amp;companyName=#{supplier.companyName}&amp;website=#{supplier.website} &amp;
+                     primaryPhone=#{supplier.primaryPhone}&amp;secondaryPhone=#{supplier.secondaryPhone}&amp;notes=#{supplier.notes}
+                     &amp;street=#{supplier.address.street}&amp;city=#{supplier.address.city}&amp;state=#{administrations.getSupplierStateAsString(administrations.supplier.indexOf(supplier))}&amp;zipcode=#{administrations.getSupplierZipAsString(administrations.supplier.indexOf(supplier))}&amp;action=changeVendor">
+                
+            </h:link>
+                <br></br>
+             <h:link  value = "delete" outcome="vendorDelete?id=#{administrations.supplier.indexOf(supplier)}&amp;businessID=#{supplier.businessID}&amp;contactName=#{supplier.contactName}
+                     &amp;companyName=#{supplier.companyName}&amp;website=#{supplier.website} &amp;
+                     primaryPhone=#{supplier.primaryPhone}&amp;secondaryPhone=#{supplier.secondaryPhone}&amp;notes=#{supplier.notes}
+                     &amp;street=#{supplier.address.street}&amp;city=#{supplier.address.city}&amp;state=#{administrations.getSupplierStateAsString(administrations.supplier.indexOf(supplier))}&amp;zipcode=#{administrations.getSupplierZipAsString(administrations.supplier.indexOf(supplier))}&amp;action=deleteVendor">
+                
+            </h:link>
+         </h:column>
+                
+         <h:column>
+            <f:facet name="header">Business ID</f:facet>
+            #{supplier.businessID}
+         </h:column>
+         
+         <h:column>
+            <f:facet name="header">Company Name</f:facet>
+            <!--   <p></p> -->            #{supplier.companyName}
+
+         </h:column>
+                 
+         <h:column>
+            <f:facet name="header">Web-site </f:facet>
+            <!--   <p></p> -->            #{supplier.website}
+
+         </h:column>
+                  
+          <h:column>
+            <f:facet name="header"> Primary Phone </f:facet>
+            <!--   <p></p> -->            #{supplier.primaryPhone}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header"> Secondary Phone </f:facet>
+            <!--   <p></p> -->            #{supplier.secondaryPhone}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header"> Note </f:facet>
+            <!--   <p></p> -->            #{supplier.notes}
+
+         </h:column>
+        
+         <h:column>
+            <f:facet name="header">Street </f:facet>
+            <!--   <p></p> -->            #{supplier.address.street}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">City </f:facet>
+            <!--   <p></p> -->            #{supplier.address.city}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">State </f:facet>
+            <!--   <p></p> -->            #{administrations.getSupplierStateAsString(administrations.supplier.indexOf(supplier))}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">Zip Code </f:facet>
+            <!--   <p></p> -->            #{administrations.getSupplierZipAsString(administrations.supplier.indexOf(supplier))}
+
+         </h:column>
+      </h:dataTable>
+        <h:link  value = "add" outcome="vendorAdd?action=addVendor&amp;businessID=123&amp;contactName=name
+                     &amp;companyName=company&amp;website=web.com.com&amp;
+                     primaryPhone=0123456789&amp;secondaryPhone=9876543210&amp;notes=
+                     &amp;street=street&amp;city=city&amp;state=GA&amp;zipcode=12345">
+        </h:link>
+        </h:form>
+        
+        
+    </body>
+</html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>Add New Employee</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <h1> Add New Employee </h1>
+        <f:metadata>
+            <f:viewParam name="employeeID" value="#{administrations.employeeID}" /> 
+            <f:viewParam name="lastName" value="#{administrations.lastName}" /> 
+            <f:viewParam name="firstName" value="#{administrations.firstName}"  /> 
+            <f:viewParam name="email" value="#{administrations.email}"  /> 
+            <f:viewParam name="primaryPhone" value="#{administrations.primaryPhone}"  /> 
+            <f:viewParam name="secondaryPhone" value="#{administrations.secondaryPhone}"  /> 
+            <f:viewParam name="title" value="#{administrations.title}"  /> 
+            <f:viewParam name="note" value="#{administrations.notes}"  /> 
+            <f:viewParam name="street" value="#{administrations.street}"  /> 
+            <f:viewParam name="city" value="#{administrations.city}"  /> 
+            <f:viewParam name="state" value="#{administrations.state}"  /> 
+            <f:viewParam name="zipcode" value="#{administrations.zipCode}"  /> 
+            <f:viewParam name="action" value="#{administrations.action}"  /> 
+        </f:metadata> 
+
+        <h:form>
+            <table>
+                <tr>
+                    <td>Employee ID</td>
+                    <td><h:inputText id="employeeID" 
+                                     value="#{administrations.employeeID}"/></td>  
+                </tr>
+                <tr>
+                    <td>Last Name</td>
+                    <td><h:inputText id="lastName" 
+                                     value="#{administrations.lastName}"/></td>  
+                </tr>
+                <tr>
+                    <td>First Name</td>
+                    <td><h:inputText id="firstName" 
+                                     value="#{administrations.firstName}"/></td>  
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td><h:inputText id="email" 
+                                     value="#{administrations.email}"/></td>  
+                </tr>
+                <tr>
+                    <td>Primary Phone</td>
+                    <td><h:inputText id="primaryPhone" 
+                                     value="#{administrations.primaryPhone}"/></td>  
+                </tr>
+                <tr>
+                    <td>Secondary Phone</td>
+                    <td><h:inputText id="secondaryPhone" 
+                                     value="#{administrations.secondaryPhone}"/></td>  
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td><h:inputText id="title" 
+                                     value="#{administrations.title}"/></td>  
+                </tr>
+                <tr>
+                    <td>Notes</td>
+                    <td><h:inputText id="notes" 
+                                     value="#{administrations.notes}"/></td>  
+                </tr>
+                <tr>
+                    <td>Street</td>
+                    <td><h:inputText id="street" 
+                                     value="#{administrations.street}"/></td>  
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td><h:inputText id="city" 
+                                     value="#{administrations.city}"/></td>  
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td><h:inputText id="state" 
+                                     value="#{administrations.state}"/></td>  
+                </tr>
+                <tr>
+                    <td>Zip Code</td>
+                    <td><h:inputText id="zipCode" 
+                                     value="#{administrations.zipCode}"/></td>  
+                </tr>
+
+
+
+            </table>
+
+            <h:commandButton value="Add" action="#{administrations.processSubmit()}" />    
+        </h:form>
+        <h:outputText escape="false"  value="#{administrations.status}"/>
+        <h:link  value = "Last Page" outcome="employeeEdit">
+        </h:link>
+    </body>
+</html>

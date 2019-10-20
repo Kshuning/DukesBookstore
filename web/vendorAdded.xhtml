@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <head>
+        <title>Vendor Added</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    
+    <body>
+        <h1 style="color:green"> Vendor's Information Added</h1>
+        
+
+        <h:form>
+            <table>
+                <tr>
+                    <td>Business ID</td>
+                    <td>#{administrations.businessID}</td>  
+                </tr>
+                <tr>
+                    <td>Contact Name</td>
+                    <td>#{administrations.contactName}</td>  
+                </tr>
+                <tr>
+                    <td>Company Name</td>
+                    <td>#{administrations.companyName}</td>  
+                </tr>
+                <tr>
+                    <td>Web-site</td>
+                    <td>#{administrations.website}</td>  
+                </tr>
+                <tr>
+                    <td>Primary Phone</td>
+                    <td>#{administrations.primaryPhone}</td>  
+                </tr>
+                 <tr>
+                    <td>Secondary Phone</td>
+                    <td>#{administrations.secondaryPhone}</td>  
+                </tr>
+               
+                <tr>
+                    <td>Notes</td>
+                    <td>#{administrations.notes}</td>  
+                </tr>
+                <tr>
+                    <td>Street</td>
+                    <td>#{administrations.street}</td>  
+                </tr>
+                <tr>
+                    <td>City</td>
+                    <td>#{administrations.city}</td>  
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td>#{administrations.state}</td>  
+                </tr>
+                <tr>
+                    <td>Zip Code</td>
+                    <td>#{administrations.zipCode}</td>  
+                </tr>
+                
+            </table>
+
+              
+        </h:form>
+        <h:link  value = "Vendor List" outcome="vendorEdit">
+                
+            </h:link>
+    </body>
+</html>

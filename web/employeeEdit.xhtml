@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title> Administration Editor </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <h1> Duke's Bookstore </h1>
+        <h:form>
+            <h:dataTable border="1" value="#{administrations.employee}" var="employee"
+         rowClasses="oddTableRow,evenTableRow" headerClass="tableHeader"
+         styleClass="table" cellpadding="5" cellspacing="0">
+        <h:column>
+            <f:facet name="header">Options</f:facet>
+            <h:link  value = "edit" outcome="employeeChange?id=#{administrations.employee.indexOf(employee)}&amp;employeeID=#{employee.idNumber}&amp;lastName=#{employee.lastName}
+                     &amp;firstName=#{employee.firstName}&amp;email=#{employee.email} &amp;
+                     primaryPhone=#{employee.primaryPhone}&amp;secondaryPhone=#{employee.secondaryPhone}&amp;title=#{employee.title}&amp;notes=#{employee.notes}
+                     &amp;street=#{employee.address.street}&amp;city=#{employee.address.city}&amp;state=#{administrations.getEmployeeStateAsString(administrations.employee.indexOf(employee))}&amp;zipcode=#{administrations.getEmployeeZipAsString(administrations.employee.indexOf(employee))}&amp;action=changeEmployee">
+                
+            </h:link>
+                <br></br>
+             <h:link value = "delete"  outcome="employeeDelete?id=#{administrations.employee.indexOf(employee)}&amp;employeeID=#{employee.idNumber}&amp;lastName=#{employee.lastName}
+                     &amp;firstName=#{employee.firstName}&amp;email=#{employee.email} &amp;
+                     primaryPhone=#{employee.primaryPhone}&amp;secondaryPhone=#{employee.secondaryPhone}&amp;title=#{employee.title}&amp;notes=#{employee.notes}
+                     &amp;street=#{employee.address.street}&amp;city=#{employee.address.city}&amp;state=#{administrations.getEmployeeStateAsString(administrations.employee.indexOf(employee))}&amp;zipcode=#{administrations.getEmployeeZipAsString(administrations.employee.indexOf(employee))}&amp;action=deleteEmployee">
+             </h:link>
+         </h:column>
+                
+         <h:column>
+            <f:facet name="header">Employee ID</f:facet>
+            #{employee.idNumber}
+         </h:column>
+         
+         <h:column>
+            <f:facet name="header">Employee Last Name</f:facet>
+            <!--   <p></p> -->            #{employee.lastName}
+
+         </h:column>
+                 
+         <h:column>
+            <f:facet name="header">Employee First Name </f:facet>
+            <!--   <p></p> -->            #{employee.firstName}
+
+         </h:column>
+                
+          <h:column>
+            <f:facet name="header">Employee Email </f:facet>
+            <!--   <p></p> -->            #{employee.email}
+
+         </h:column>    
+          <h:column>
+            <f:facet name="header">Employee Primary Phone </f:facet>
+            <!--   <p></p> -->            #{employee.primaryPhone}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">Employee Secondary Phone </f:facet>
+            <!--   <p></p> -->            #{employee.secondaryPhone}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">Employee Note </f:facet>
+            <!--   <p></p> -->            #{employee.notes}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">Employee Title </f:facet>
+            <!--   <p></p> -->            #{employee.title}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">Street </f:facet>
+            <!--   <p></p> -->            #{employee.address.street}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">City </f:facet>
+            <!--   <p></p> -->            #{employee.address.city}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">State </f:facet>
+            <!--   <p></p> -->            #{administrations.getEmployeeStateAsString(administrations.employee.indexOf(employee))}
+
+         </h:column>
+         <h:column>
+            <f:facet name="header">Zip Code </f:facet>
+            <!--   <p></p> -->            #{administrations.getEmployeeZipAsString(administrations.employee.indexOf(employee))}
+
+         </h:column>
+      </h:dataTable>
+        <h:link  value = "add" outcome="employeeAdd?action=addEmployee&amp;employeeID=123&amp;lastName=Last
+                     &amp;firstName=First&amp;email=test@gmail.com&amp;
+                     primaryPhone=0123456789&amp;secondaryPhone=9876543210&amp;title=title&amp;notes=
+                     &amp;street=street&amp;city=city&amp;state=GA&amp;zipcode=12345">
+        </h:link>
+        </h:form>
+        
+        
+    </body>
+</html>
