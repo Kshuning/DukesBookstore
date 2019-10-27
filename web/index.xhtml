@@ -4,20 +4,17 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Duke’s Bookstore</title>
+        <title>Auto store</title>
     </h:head>
     <h:body>
-       <h1> Duke's Bookstore </h1>
-        <h:form>
-            <h:dataTable value="#{administration.employee}" var="employee"
-         rowClasses="oddTableRow,evenTableRow" headerClass="tableHeader"
-         styleClass="table" cellpadding="5" cellspacing="0">
-         <h:column>
-            <f:facet name="header">Employee ID</f:facet>
-            <p>#{employee.idNumber}</p>
-         </h:column>
-      </h:dataTable>
-        </h:form> 
+       <h1> Auto store </h1>
+        <h:link  value = "Vendors" outcome="vendorEdit">
+            
+            
+        </h:link><br></br>
+        <h:link  value = "Employees" outcome="employeeEdit">
+            
+        </h:link>
     </h:body>
 </html>
 

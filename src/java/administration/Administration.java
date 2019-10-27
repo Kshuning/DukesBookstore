@@ -5,16 +5,28 @@
  */
 package administration;
 
+import data_models.business_entities.Business;
 import data_models.business_entities.Supplier;
 import data_models.locations.Address;
 import data_models.people.Employee;
+import data_models.products.Car;
 import data_models.products.Part;
+import database_controller.DatabaseManager;
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.inject.Named;
 import javax.enterprise.context.Dependent;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -22,9 +34,12 @@ import javax.faces.bean.SessionScoped;
  */
 @SessionScoped
 @ManagedBean(name = "administrations")
-public class Administration {
+public class Administration implements Serializable {
 
     protected ArrayList<Employee> employee = new ArrayList<>();
+    protected ArrayList<Supplier> supplier = new ArrayList<Supplier>();
+    protected ArrayList<Part> parts = new ArrayList<Part>();
+    protected ArrayList<Part> partsOfSupplier = new ArrayList<Part>();
     protected int id;
     protected int employeeID;
     private String lastName;
@@ -43,8 +58,141 @@ public class Administration {
     private String status; // text to show
     private int businessID;
     private String companyName;
-    private String contactName; 
+    private String contactName;
     private String website;
+
+    private Integer partID;
+    private Integer supplierID;
+    private Integer carID;
+    private String name;
+    private String description;
+    private String category;
+    private BigDecimal pricePerUnit;
+    private String quantityPerUnit;
+    private boolean discontinued;
+    private String make;
+    private String model;
+    private int productionYear;
+
+    DatabaseManager dbManager;
+
+    public ArrayList<Part> getPartsOfSupplier() {
+        partsOfSupplier = new ArrayList<Part>();
+        for (int i = 0; i < parts.size(); i++) {
+            if (parts.get(i).getSupplier().getBusinessID().equals(supplierID)) {
+                partsOfSupplier.add(parts.get(i));
+            }
+        }
+        return partsOfSupplier;
+    }
+
+    public void setPartsOfSupplier(ArrayList<Part> partsOfSupplier) {
+        this.partsOfSupplier = partsOfSupplier;
+    }
+
+    public Integer getPartID() {
+        return partID;
+    }
+
+    public void setPartID(Integer partID) {
+        this.partID = partID;
+    }
+
+    public Integer getSupplierID() {
+        return supplierID;
+    }
+
+    public void setSupplierID(Integer supplierID) {
+        this.supplierID = supplierID;
+    }
+
+    public Integer getCarID() {
+        return carID;
+    }
+
+    public void setCarID(Integer carID) {
+        this.carID = carID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public BigDecimal getPricePerUnit() {
+        return pricePerUnit;
+    }
+
+    public void setPricePerUnit(BigDecimal pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
+    }
+
+    public String getQuantityPerUnit() {
+        return quantityPerUnit;
+    }
+
+    public void setQuantityPerUnit(String quantityPerUnit) {
+        this.quantityPerUnit = quantityPerUnit;
+    }
+
+    public boolean isDiscontinued() {
+        return discontinued;
+    }
+
+    public void setDiscontinued(boolean discontinued) {
+        this.discontinued = discontinued;
+    }
+
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public int getProductionYear() {
+        return productionYear;
+    }
+
+    public void setProductionYear(int productionYear) {
+        this.productionYear = productionYear;
+    }
+
+    public DatabaseManager getDbManager() {
+        return dbManager;
+    }
+
+    public void setDbManager(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
+    }
 
     public int getBusinessID() {
         return businessID;
@@ -77,7 +225,6 @@ public class Administration {
     public void setWebsite(String website) {
         this.website = website;
     }
-                                                 
 
     public String getState() {
         return state;
@@ -175,8 +322,6 @@ public class Administration {
         this.status = status;
     }
 
-    protected ArrayList<Supplier> supplier= new ArrayList<Supplier>();
-
     public ArrayList<Supplier> getSupplier() {
         return supplier;
     }
@@ -192,7 +337,7 @@ public class Administration {
     public void setParts(ArrayList<Part> parts) {
         this.parts = parts;
     }
-    protected ArrayList<Part> parts= new ArrayList<Part>();
+
     public int getEmployeeID() {
         return employeeID;
     }
@@ -221,7 +366,8 @@ public class Administration {
      * Creates a new instance of Administration
      */
     public Administration() {
-        Address a = null;
+        carID = 0;
+        /*Address a = null;
         try {
             a = new Address("123 Sesame Street", "New York", "NY", "96035");
         } catch (Exception ex) {
@@ -240,10 +386,25 @@ public class Administration {
             e = new Employee(456789, "Clark", "Jason", "CJason@email.com", "1234567890", "1234567890", a, "", "Manager");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+        }*/
+
+ /*
+        try {
+            dbManager = new DatabaseManager();
+            status = ("<p style=\"color:green\">DB Connection succesfull!</p> ");
+        } catch (Exception e) {
+            status = ("<p style=\"color:red\">DB Connection not succesfull!</p> ");
         }
+        loadEmployees();*/
+    }
 
-        employee.add(e);
-
+    private void loadEmployees() {
+        try {
+            employee = new ArrayList<>(dbManager.getEmployees());
+            status = status + ("<p style=\"color:green\">DB List loaded succesfull!</p> ");
+        } catch (NullPointerException | SQLException e) {
+            status = status + "<p style=\"color:red\">Error while loading employee list (Null pointer): " + e.getMessage() + " " + e.getLocalizedMessage() + " " + e.toString() + " " + Arrays.toString(e.getStackTrace()) + "</p>";
+        }
     }
 
     public ArrayList<Employee> getEmployee() {
@@ -269,15 +430,14 @@ public class Administration {
 //    public void setParts(ArrayList<Part> parts) {
 //        this.parts = parts;
 //    }
-    
     /*
         Does all the actions when a button is clicked
-    */
+     */
     public String processSubmit() {
         String link = "";
         status = "";
         Address a = null;
-        
+        Car c = null;
         // there is one variable action which defines which action should the button do. Changing an employee or adding or deleting
         switch (action) {
             case "deleteEmployee":
@@ -288,9 +448,14 @@ public class Administration {
                 link = "vendorDeleted";
                 supplier.remove(id);
                 break;
+            case "deleteParts":
+                link = "partsDeleted";
+                parts.remove(id);
+                break;
             case "changeEmployee":
                 link = "employeeChanged";
-                
+                status = "";
+
                 // This one has try and catch because the telephone number, state and zip has to follow certain standard
                 try {
                     employee.get(id).setEmail(email);
@@ -318,9 +483,10 @@ public class Administration {
                 }
 
                 break;
-                case "changeVendor":
+            case "changeVendor":
                 link = "vendorChanged";
-                
+                status = "";
+
                 // This one has try and catch because the telephone number, state and zip has to follow certain standard
                 try {
                     supplier.get(id).setWebsite(website);
@@ -332,7 +498,7 @@ public class Administration {
                     } catch (Exception ex) {
                         status = "<p style=\"color:red\">" + ex.getMessage() + "</p>";
                         link = "";
-                    }                   
+                    }
                     supplier.get(id).setNewNotes(notes);
                     try {
                         a = new Address(street, city, state, zipCode);
@@ -347,6 +513,33 @@ public class Administration {
                 }
 
                 break;
+
+            case "changeParts":
+                link = "partsChanged";
+                
+                status = "";
+                try {
+                    c = new Car(parts.get(id).getCar().getCarID(), make, model, productionYear);
+                    parts.get(id).setCar(c);
+                } catch (Exception ex) {
+                    status = "<p style=\"color:red\">" + ex.getMessage() + "</p>";
+                    link = "";
+                }
+                try {
+                    parts.get(id).setCategory(category);
+                    parts.get(id).setName(name);
+                    parts.get(id).setDescription(description);
+                    parts.get(id).setPricePerUnit(pricePerUnit);
+                    parts.get(id).setQuantityPerUnit(quantityPerUnit);
+                    parts.get(id).setDiscontinued(discontinued);
+
+                } catch (Exception ex) {
+                    status = "<p style=\"color:red\">" + ex.getMessage() + "</p>";
+                    link = "";
+                }
+
+                break;
+
             case "addEmployee":
                 link = "employeeAdded";
                 status = "";
@@ -374,7 +567,26 @@ public class Administration {
                     link = "";
                 }
                 try {
-                    supplier.add(new Supplier (businessID, companyName, contactName, primaryPhone, secondaryPhone,website, a, notes));
+                    supplier.add(new Supplier(businessID, companyName, contactName, primaryPhone, secondaryPhone, website, a, notes));
+                } catch (Exception ex) {
+                    status = "<p style=\"color:red\">" + ex.getMessage() + "</p>";
+                    link = "";
+                }
+
+                break;
+            case "addParts":
+                link = "partsAdded";
+                status = "";
+                carID++;
+                try {
+                    c = new Car(carID, make, model, productionYear);
+                } catch (Exception ex) {
+                    status = "<p style=\"color:red\">" + ex.getMessage() + "</p>";
+                    link = "";
+                }
+                try {
+                    parts.add(new Part(partID, this.getSupplierByID(supplierID), c, name, description, category, pricePerUnit, quantityPerUnit, discontinued));
+
                 } catch (Exception ex) {
                     status = "<p style=\"color:red\">" + ex.getMessage() + "</p>";
                     link = "";
@@ -382,9 +594,8 @@ public class Administration {
 
                 break;
         }
-        
-        /* Change the status if adding employee with invalid state or zip code */
 
+        /* Change the status if adding employee with invalid state or zip code */
         if (action.equals("addEmployee") || action.equals("changeEmployee") || action.equals("addVendor") || action.equals("deleteVendor")) {
 
             // Error handling
@@ -395,9 +606,19 @@ public class Administration {
             if (zipCode.length() != 10 && zipCode.length() != 5) {
                 status = "<p style=\"color:red\">Zip code must be only 5 or 10 characters.</p>";
             }
-            
+
         }
         return link;
+    }
+
+    public Supplier getSupplierByID(int id) {
+        Supplier s = null;
+        for (int i = 0; i < supplier.size(); i++) {
+            if (supplier.get(i).getBusinessID() == id) {
+                s = supplier.get(i);
+            }
+        }
+        return s;
     }
 
     public void resetForm() {
@@ -415,26 +636,26 @@ public class Administration {
         employeeID = 0;
     }
 
-  
     // transform char[] to String
     public String getEmployeeStateAsString(int employeeId) {
         String s = String.valueOf(employee.get(employeeId).getAddress().getState());
         state = s;
         return s;
     }
-    
+
     // transform char[] to String
     public String getEmployeeZipAsString(int employeeId) {
         String s = String.valueOf(employee.get(employeeId).getAddress().getZipCode());
         zipCode = s;
         return s;
     }
-     public String getSupplierStateAsString(int businessID) {
+
+    public String getSupplierStateAsString(int businessID) {
         String s = String.valueOf(supplier.get(businessID).getAddress().getState());
         state = s;
         return s;
     }
-    
+
     // transform char[] to String
     public String getSupplierZipAsString(int businessID) {
         String s = String.valueOf(supplier.get(businessID).getAddress().getZipCode());

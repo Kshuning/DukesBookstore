@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+     <head>
+        <title> Parts Delete</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+
+    <body>
+        <h1> Delete Parts Information</h1>
+        <f:metadata>
+            <f:viewParam name="id" value="#{administrations.id}" required="true" />  
+            <f:viewParam name="action" value="#{administrations.action}" /> 
+            <f:viewParam name="partID" value="#{administrations.partID}" /> 
+            <f:viewParam name="category" value="#{administrations.category}" /> 
+            <f:viewParam name="description" value="#{administrations.description}"  /> 
+            <f:viewParam name="discontinued" value="#{administrations.discontinued}"  />  
+            <f:viewParam name="name" value="#{administrations.name}"  /> 
+            <f:viewParam name="pricePerUnit" value="#{administrations.pricePerUnit}"  /> 
+            <f:viewParam name="quantityPerUnit" value="#{administrations.quantityPerUnit}"  /> 
+            <f:viewParam name="make" value="#{administrations.make}"  /> 
+            <f:viewParam name="model" value="#{administrations.model}"  /> 
+            <f:viewParam name="productionYear" value="#{administrations.productionYear}"  /> 
+        </f:metadata> 
+
+        <h:form>
+            <table>
+                 <tr>
+                    <td>Part ID</td>
+                    <td>#{administrations.partID}</td>  
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td>#{administrations.category}</td>  
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td>#{administrations.description}</td>  
+                </tr>
+                <tr>
+                    <td>Discontinued</td>
+                    <td>#{administrations.discontinued}</td>  
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>#{administrations.name}</td>  
+                </tr>
+                <tr>
+                    <td>Price per unit</td>
+                    <td>#{administrations.pricePerUnit}</td>  
+                </tr>
+                <tr>
+                    <td>Quantity per unit</td>
+                    <td>#{administrations.quantityPerUnit}</td>  
+                </tr>
+                <tr>
+                    <td>Make</td>
+                    <td>#{administrations.make}</td>  
+                </tr>
+                <tr>
+                    <td>Model</td>
+                    <td>#{administrations.model}</td>  
+                </tr>
+                <tr>
+                    <td>Year</td>
+                    <td>#{administrations.productionYear}</td>  
+                </tr>
+
+
+
+            </table>
+
+            <h:commandButton value="Delete" action="#{administrations.processSubmit()}" />    
+        </h:form>
+        <h:link  value = "Last Page" outcome="partsEdit">
+
+        </h:link>
+    </body>
+</html>

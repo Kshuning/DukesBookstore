@@ -13,7 +13,7 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
-        <h1> Duke's Bookstore </h1>
+        <h1> Vendors </h1>
         <h:form>
             <h:dataTable border="1" value="#{administrations.supplier}" var="supplier"
          rowClasses="oddTableRow,evenTableRow" headerClass="tableHeader"
@@ -32,6 +32,10 @@ and open the template in the editor.
                      primaryPhone=#{supplier.primaryPhone}&amp;secondaryPhone=#{supplier.secondaryPhone}&amp;notes=#{supplier.notes}
                      &amp;street=#{supplier.address.street}&amp;city=#{supplier.address.city}&amp;state=#{administrations.getSupplierStateAsString(administrations.supplier.indexOf(supplier))}&amp;zipcode=#{administrations.getSupplierZipAsString(administrations.supplier.indexOf(supplier))}&amp;action=deleteVendor">
                 
+            </h:link>
+                  <br></br>
+                  <h:link  value = "Parts" outcome="partsEdit?supplierID=#{supplier.businessID}">
+            
             </h:link>
          </h:column>
                 
@@ -93,6 +97,8 @@ and open the template in the editor.
                      &amp;companyName=company&amp;website=web.com.com&amp;
                      primaryPhone=0123456789&amp;secondaryPhone=9876543210&amp;notes=
                      &amp;street=street&amp;city=city&amp;state=GA&amp;zipcode=12345">
+        </h:link><br></br>
+        <h:link  value = "index" outcome="index">
         </h:link>
         </h:form>
         

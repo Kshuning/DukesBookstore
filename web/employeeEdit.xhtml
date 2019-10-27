@@ -13,7 +13,7 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
-        <h1> Duke's Bookstore </h1>
+        <h1> Employees </h1>
         <h:form>
             <h:dataTable border="1" value="#{administrations.employee}" var="employee"
          rowClasses="oddTableRow,evenTableRow" headerClass="tableHeader"
@@ -101,8 +101,11 @@ and open the template in the editor.
                      &amp;firstName=First&amp;email=test@gmail.com&amp;
                      primaryPhone=0123456789&amp;secondaryPhone=9876543210&amp;title=title&amp;notes=
                      &amp;street=street&amp;city=city&amp;state=GA&amp;zipcode=12345">
+        </h:link><br></br>
+        <h:link  value = "index" outcome="index">
         </h:link>
         </h:form>
+        <h:outputText escape="false"  value="#{administrations.status}"/>
         
         
     </body>

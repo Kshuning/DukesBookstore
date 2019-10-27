@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <head>
+        <title>Parts Deleted</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    
+    <body>
+        <h1 style="color:red"> Part Deleted</h1>
+        
+
+        <h:form>
+             <table>
+                 <tr>
+                    <td>Part ID</td>
+                    <td>#{administrations.partID}</td>  
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td>#{administrations.category}</td>  
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td>#{administrations.description}</td>  
+                </tr>
+                <tr>
+                    <td>Discontinued</td>
+                    <td>#{administrations.discontinued}</td>  
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>#{administrations.name}</td>  
+                </tr>
+                <tr>
+                    <td>Price per unit</td>
+                    <td>#{administrations.pricePerUnit}</td>  
+                </tr>
+                <tr>
+                    <td>Quantity per unit</td>
+                    <td>#{administrations.quantityPerUnit}</td>  
+                </tr>
+                <tr>
+                    <td>Make</td>
+                    <td>#{administrations.make}</td>  
+                </tr>
+                <tr>
+                    <td>Model</td>
+                    <td>#{administrations.model}</td>  
+                </tr>
+                <tr>
+                    <td>Year</td>
+                    <td>#{administrations.productionYear}</td>  
+                </tr>
+
+
+
+            </table>
+
+              
+        </h:form>
+        <h:link  value = "Parts List" outcome="partsEdit">
+                
+            </h:link>
+    </body>
+</html>

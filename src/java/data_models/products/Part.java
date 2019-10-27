@@ -51,7 +51,7 @@ public class Part {
      * @param discontinued A flag indicating this part is no longer sold by the
      *                     company.
      */
-    private Part(Integer partID, Business business, Car car, String name,
+    public Part(Integer partID, Business business, Car car, String name,
                  String description, String category, BigDecimal pricePerUnit,
                  String quantityPerUnit,
                  boolean discontinued) {

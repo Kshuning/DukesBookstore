@@ -21,7 +21,7 @@ public class Car {
      * @param model The model of the car (Sonic, Fiesta, etc).
      * @param productionYear The production year for this car configuration.
      */
-    private Car(Integer carID, String make, String model, Integer productionYear) {
+    public Car(Integer carID, String make, String model, Integer productionYear) {
         setCarID(carID);
         setMake(make);
         setModel(model);

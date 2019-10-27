@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title> Administration Editor </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        
+        
+        <f:metadata>
+            <f:viewParam name="supplierID" value="#{administrations.supplierID}" /> 
+        </f:metadata>
+    </head>
+    <body>
+        <h1> Parts </h1>
+        <h:form>
+            <h:dataTable border="1" value="#{administrations.partsOfSupplier}" var="parts"
+         rowClasses="oddTableRow,evenTableRow" headerClass="tableHeader"
+         styleClass="table" cellpadding="5" cellspacing="0">
+        <h:column>
+            <f:facet name="header">Options</f:facet>
+            <h:link  value = "edit" outcome="partsChange?id=#{administrations.parts.indexOf(parts)}&amp;partID=#{parts.partID}&amp;category=#{parts.category}&amp;description=#{parts.description}&amp;discontinued=#{parts.discontinued}&amp;name=#{parts.name}&amp;pricePerUnit=#{parts.pricePerUnit}&amp;quantityPerUnit=#{parts.quantityPerUnit}&amp;carID=#{parts.car.carID}&amp;make=#{parts.car.make}&amp;model=#{parts.car.model}&amp;productionYear=#{parts.car.productionYear}&amp;action=changeParts">
+                
+            </h:link><br></br>
+                        <h:link  value = "delete" outcome="partsDelete?id=#{administrations.parts.indexOf(parts)}&amp;partID=#{parts.partID}&amp;category=#{parts.category}&amp;description=#{parts.description}&amp;discontinued=#{parts.discontinued}&amp;name=#{parts.name}&amp;pricePerUnit=#{parts.pricePerUnit}&amp;quantityPerUnit=#{parts.quantityPerUnit}&amp;carID=#{parts.car.carID}&amp;make=#{parts.car.make}&amp;model=#{parts.car.model}&amp;productionYear=#{parts.car.productionYear}&amp;action=deleteParts">
+                
+            </h:link>
+
+         </h:column>
+             
+         <h:column>
+            <f:facet name="header">Part ID</f:facet>
+            #{parts.partID}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Category</f:facet>
+            #{parts.category}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Description</f:facet>
+            #{parts.description}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Discontinued</f:facet>
+            #{parts.discontinued}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Name</f:facet>
+            #{parts.name}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Price per Unit</f:facet>
+            #{parts.pricePerUnit}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Quantity per Unit</f:facet>
+            #{parts.quantityPerUnit}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Car ID</f:facet>
+            #{parts.car.carID}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Make</f:facet>
+            #{parts.car.make}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Model</f:facet>
+            #{parts.car.model}
+         </h:column>
+         <h:column>
+            <f:facet name="header">Year</f:facet>
+            #{parts.car.productionYear}
+         </h:column>
+         
+       
+      </h:dataTable>
+        <h:link  value = "add" outcome="partsAdd?action=addParts&amp;partID=1&amp;category=Cat&amp;description=Some part&amp;discontinued=false&amp;name=P1&amp;pricePerUnit=1&amp;quantityPerUnit=1&amp;carID=1&amp;make=VW&amp;model=Tiguan&amp;productionYear=2019&amp;">
+            
+        </h:link><br></br>
+        <h:link  value = "index" outcome="index">
+        </h:link>
+        </h:form>
+   
+        
+    </body>
+</html>
