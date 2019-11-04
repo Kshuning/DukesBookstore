@@ -8,10 +8,10 @@ import java.util.Objects;
  * The class provides static factory methods for instantiating Car objects.
  */
 public class Car {
-    Integer carID;
-    String make;
-    String model;
-    int productionYear;
+    private Integer carID;
+    private String make;
+    private String model;
+    private int productionYear;
 
     /**
      * Private constructor can only be called by using the createNew or createExisting
@@ -94,5 +94,16 @@ public class Car {
     /**Setter for productionYear, requires non-null*/
     public void setProductionYear(Integer productionYear) {
         this.productionYear = Objects.requireNonNull(productionYear);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return getProductionYear().equals(car.getProductionYear()) &&
+                   Objects.equals(getCarID(), car.getCarID()) &&
+                   Objects.equals(getMake(), car.getMake()) &&
+                   Objects.equals(getModel(), car.getModel());
     }
 }

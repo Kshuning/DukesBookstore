@@ -1,7 +1,13 @@
 package data_models.people;
 
 import data_models.locations.Address;
+import data_models.orders.Order;
+import database_controller.DatabaseWriteable;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -10,7 +16,7 @@ import java.util.Objects;
  * Any class extending this should implement factory methods for creating a new
  * and existing object rather than allow instantiation from a constructor.
  */
-public abstract class Person {
+public abstract class Person implements DatabaseWriteable {
     private Integer idNumber;
     private String lastName;
     private String firstName;
@@ -19,6 +25,7 @@ public abstract class Person {
     private String secondaryPhone;
     private Address address;
     private String notes;
+    private List<Order> orderList;
 
     /**
      * This constructor should be used to construct a new Person object by the
@@ -163,5 +170,82 @@ public abstract class Person {
      */
     public void setNewNotes(String notes) {
         this.notes = notes;
+    }
+
+    /**Getter for orderList*/
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    /**Setter for orderList*/
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
+    }
+
+    /**
+     * Equals override.
+     * @param o The object to compare.
+     * @return True if all Person values are the same between this and the object
+     *          we are comparing.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return getIdNumber().equals(person.getIdNumber()) &&
+                   getLastName().equals(person.getLastName()) &&
+                   getFirstName().equals(person.getFirstName()) &&
+                   getEmail().equals(person.getEmail()) &&
+                   getPrimaryPhone().equals(person.getPrimaryPhone()) &&
+                   Objects.equals(getSecondaryPhone(), person.getSecondaryPhone()) &&
+                   getAddress().equals(person.getAddress()) &&
+                   Objects.equals(getNotes(), person.getNotes());
+    }
+
+    /**
+     * For creating a PreparedStatement for inserting new records into the DB.
+     * @param connection The DB connection.
+     * @return A PreparedStatement with Person information to be inserted.
+     * @throws SQLException If there's an error in the insertion.
+     */
+    protected abstract PreparedStatement insert(Connection connection) throws SQLException;
+
+    /**
+     * For creating a PreparedStatement for updating existing records in the DB.
+     * @param connection The DB connection.
+     * @return A PreparedStatement with Person information to be updated.
+     * @throws SQLException If there's an error in the update.
+     */
+    protected abstract PreparedStatement update(Connection connection) throws SQLException;
+
+    /**
+     * Fills a PreparedStatement with Person information. Any query string should
+     * follow the order lain out in this method for insertion. Any additional
+     * information to be included should be handled in an override of this method.
+     * @param pStmt The PreparedStatement we wish to fill with Person data.
+     * @return The index value of where to insert the next parameter.
+     * @throws SQLException If there's an error setting a parameter.
+     */
+    protected int fillParameters(PreparedStatement pStmt) throws SQLException {
+        int i = 1;
+        pStmt.setString(i++, this.getLastName());
+        pStmt.setString(i++, this.getFirstName());
+        pStmt.setString(i++, this.getEmail());
+        pStmt.setString(i++, this.getPrimaryPhone());
+        pStmt.setString(i++, this.getSecondaryPhone());
+        pStmt.setString(i++, this.getAddress().getStreet());
+        pStmt.setString(i++, this.getAddress().getCity());
+        pStmt.setString(i++, String.valueOf(this.getAddress().getState()));
+        pStmt.setString(i++, String.valueOf(this.getAddress().getZipCode()));
+        pStmt.setString(i++, this.getNotes());
+        return i;
+    };
+
+    @Override
+    public void setGeneratedId(Integer id) {
+        if (getIdNumber() < 0) {
+            setIdNumber(id);
+        }
     }
 }

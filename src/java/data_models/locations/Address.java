@@ -1,5 +1,6 @@
 package data_models.locations;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -121,5 +122,16 @@ public class Address {
         else {
             this.zipCode = zipCode.toCharArray();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(getStreet(), address.getStreet()) &&
+                   Objects.equals(getCity(), address.getCity()) &&
+                   Arrays.equals(getState(), address.getState()) &&
+                   Arrays.equals(getZipCode(), address.getZipCode());
     }
 }

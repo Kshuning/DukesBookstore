@@ -6,6 +6,7 @@ import data_models.products.Part;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * ResupplyOrder is an order created by an Employee to restock inventory in the
@@ -31,9 +32,6 @@ public class ResupplyOrder extends Order {
      * @param orderedParts A map of parts ordered with the Key being a part and
      *                     the value being the number of those parts ordered.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param orderStatus The current status of the order.
      * @param notes Any notes about the order that should be stored.
      */
@@ -46,11 +44,10 @@ public class ResupplyOrder extends Order {
                           BigDecimal shippingFee,
                           Map<Part, Integer> orderedParts,
                           BigDecimal taxAmount,
-                          BigDecimal totalOrderAmount,
                           Status orderStatus,
                           String notes) {
         super(orderID, initiatingEmployee, orderedParts, orderCreationDate,
-            shippingDate, shippingFee, taxAmount, totalOrderAmount, orderStatus, notes);
+            shippingDate, shippingFee, taxAmount, orderStatus, notes);
         setOrderApprovalDate(orderApprovalDate);
         setApprovingManager(approvingManager);
     }
@@ -68,9 +65,6 @@ public class ResupplyOrder extends Order {
      * @param shippingFee The shipping fee to be paid to the supplier or shipping
      *                    company.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param notes Any notes about the order that should be stored.
      * @return a new ResupplyOrder to add to the database.
      */
@@ -78,11 +72,10 @@ public class ResupplyOrder extends Order {
                                           BigDecimal shippingFee,
                                           Map<Part, Integer> orderedParts,
                                           BigDecimal taxAmount,
-                                          BigDecimal totalOrderAmount,
                                           String notes) {
         return new ResupplyOrder(-1, initiatingEmployee, new Date(), null,
             null, null, shippingFee, orderedParts,
-            taxAmount, totalOrderAmount, Status.NEW, notes);
+            taxAmount, Status.NEW, notes);
     }
 
     /**
@@ -100,9 +93,6 @@ public class ResupplyOrder extends Order {
      * @param orderedParts A map of parts ordered with the Key being a part and
      *                     the value being the number of those parts ordered.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param orderStatus The current status of the order.
      * @param notes Any notes about the order that should be stored.
      * @return An existing ResupplyOrder from established data.
@@ -116,12 +106,11 @@ public class ResupplyOrder extends Order {
                                                BigDecimal shippingFee,
                                                Map<Part, Integer> orderedParts,
                                                BigDecimal taxAmount,
-                                               BigDecimal totalOrderAmount,
                                                Status orderStatus,
                                                String notes) {
         return new ResupplyOrder(orderID, initiatingEmployee, orderCreationDate,
             orderApprovalDate, approvingManager, shippingDate, shippingFee,
-            orderedParts, taxAmount, totalOrderAmount, orderStatus, notes);
+            orderedParts, taxAmount, orderStatus, notes);
     }
 
     /**
@@ -165,5 +154,6 @@ public class ResupplyOrder extends Order {
     public void setApprovingManager(Employee approvingManager) {
         this.approvingManager = approvingManager;
     }
+
 }
 

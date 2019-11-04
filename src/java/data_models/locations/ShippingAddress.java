@@ -2,6 +2,8 @@ package data_models.locations;
 
 import data_models.people.Customer;
 
+import java.util.Objects;
+
 /**
  * ShippingAddress allows the creation of an address specifically for shipping
  * items. It can be created from a Customer and use the customer information for
@@ -39,5 +41,19 @@ public class ShippingAddress extends Address {
      */
     public ShippingAddress(Customer customer, Address shippingAddress) {
         this((customer.getFirstName() + " " + customer.getLastName()), shippingAddress);
+    }
+
+    /**Getter for shipName*/
+    public String getShipName() {
+        return shipName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ShippingAddress that = (ShippingAddress) o;
+        return Objects.equals(shipName, that.shipName);
     }
 }

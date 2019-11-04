@@ -1,8 +1,13 @@
 package data_models.products;
 
 import data_models.business_entities.Business;
+import database_controller.DatabaseWriteable;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.sql.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -16,7 +21,7 @@ import java.util.Objects;
  * Any new part that is to be added to the database should be created createNew
  * factory method.
  */
-public class Part {
+public class Part implements DatabaseWriteable {
     private Integer partID;
     private Business supplier;
     private Car car;
@@ -26,6 +31,8 @@ public class Part {
     private BigDecimal pricePerUnit;
     private String quantityPerUnit;
     private boolean discontinued;
+    private Integer quantityOnHand;
+    private byte[] image;
 
     /**
      * For constructing a Part object. Can only be used by calling the static
@@ -50,20 +57,24 @@ public class Part {
      *                        order unit, this should be explicit.
      * @param discontinued A flag indicating this part is no longer sold by the
      *                     company.
+     * @param quantityOnHand The current number of parts that we have on hand.
+     * @param image The image associated with this Part.
      */
     public Part(Integer partID, Business business, Car car, String name,
                  String description, String category, BigDecimal pricePerUnit,
                  String quantityPerUnit,
-                 boolean discontinued) {
+                 boolean discontinued, Integer quantityOnHand, byte[] image) {
         setPartID(partID);
         setSupplier(business);
         setCar(car);
         setName(name);
-        this.description = description;
-        this.category = category;
+        setDescription(description);
+        setCategory(category);
         setPricePerUnit(pricePerUnit);
         setQuantityPerUnit(quantityPerUnit);
-        this.discontinued = discontinued;
+        setDiscontinued(discontinued);
+        setQuantityOnHand(quantityOnHand);
+        setImage(image);
     }
     /**
      * Factory method for creating a new Part item to add to the database.
@@ -80,16 +91,19 @@ public class Part {
      * @param category The category the part belongs to.
      * @param pricePerUnit The price for each unit of a part.
      *                     Non-null required.
+
      * @param quantityPerUnit The number of parts to a quantity per an order.
      *                        Non-null required. If there is only 1 part per
      *                        order unit, this should be explicit.
+     * @param quantityOnHand The current number of parts that we have on hand.
+     * @param image The image associated with this Part.
      * @return A new Part object that is to be written to the database.
      */
     public static Part createNew(Business business, Car car, String name, String description,
                                  String category, BigDecimal pricePerUnit,
-                                 String quantityPerUnit) {
+                                 String quantityPerUnit, Integer quantityOnHand, byte[] image) {
         return new Part(-1, business, car, name, description, category,
-            pricePerUnit, quantityPerUnit, false);
+            pricePerUnit, quantityPerUnit, false, quantityOnHand, image);
     }
 
     /**
@@ -118,18 +132,20 @@ public class Part {
      *                        order unit, this should be explicit.
      * @param discontinued A flag indicating this part is no longer sold by the
      *                     company.
+     * @param quantityOnHand The current number of parts that we have on hand.
+     * @param image The image associated with this Part.
      * @return An existing Part (typically from the database) object.
      */
     public static Part createExisting(Integer partID, Business business, Car car,
                                       String name, String description, String category,
                                       BigDecimal pricePerUnit, String quantityPerUnit,
-                                      boolean discontinued) {
+                                      boolean discontinued, Integer quantityOnHand, byte[] image) {
         return new Part(partID, business, car, name, description, category,
-            pricePerUnit, quantityPerUnit, discontinued);
+            pricePerUnit, quantityPerUnit, discontinued, quantityOnHand, image);
     }
 
     /**Getter for partID*/
-    public int getPartID() {
+    public Integer getPartID() {
         return partID;
     }
 
@@ -219,5 +235,127 @@ public class Part {
     /**Setter for discontinued status*/
     public void setDiscontinued(boolean discontinued) {
         this.discontinued = discontinued;
+    }
+
+    public void setQuantityOnHand(int quantityOnHand) {
+        this.quantityOnHand = quantityOnHand;
+    }
+
+    public Integer getQuantityOnHand() {
+        return this.quantityOnHand;
+    }
+
+    /**Getter for image*/
+    public byte[] getImage() {
+        return image;
+    }
+
+    /**Setter for image*/
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Part part = (Part) o;
+        return isDiscontinued() == part.isDiscontinued() &&
+                   getPartID().equals(part.getPartID()) &&
+                   getSupplier().equals(part.getSupplier()) &&
+                   getCar().equals(part.getCar()) &&
+                   getName().equals(part.getName()) &&
+                   Objects.equals(getDescription(), part.getDescription()) &&
+                   Objects.equals(getCategory(), part.getCategory()) &&
+                   (getPricePerUnit().compareTo(part.getPricePerUnit()) == 0) &&
+                   getQuantityPerUnit().equals(part.getQuantityPerUnit()) &&
+                   Objects.equals(getQuantityOnHand(), part.getQuantityOnHand()) &&
+                   Arrays.equals(getImage(), part.getImage());
+    }
+
+    /**
+     * Creates a PreparedStatement for writing a Part object to the database.
+     * Used by the DatabaseManager.
+     * @param connection The database connection.
+     * @return A PreparedStatement containing the Part we want to write.
+     * @throws SQLException If there is a problem creating the statement.
+     */
+    @Override
+    public PreparedStatement getWriteStatement(Connection connection) throws SQLException {
+        if (partID < 0) {
+            return insert(connection);
+        }
+        else {
+            return update(connection);
+        }
+    }
+
+    /**
+     * Creates an Insert statement for new Part objects to save to the database.
+     * @param connection The database connection object.
+     * @return A PreparedStatement for inserting new Part objects.
+     * @throws SQLException If there is a problem creating the statement.
+     */
+    private PreparedStatement insert(Connection connection) throws SQLException {
+        String sql = "INSERT INTO AutoPartsStore.Parts" +
+                         " (SupplierID, CarID, Name, Category, PartDescription," +
+                         " PricePerUnit, QuantityPerUnit, Discontinued, QuantityOnHand, Image)" +
+                         " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        PreparedStatement pStmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        fillParameters(pStmt);
+        return pStmt;
+    }
+
+    /**
+     * Creates an Update statement for existing Part objects to save to the database.
+     * @param connection The database connection object.
+     * @return A PreparedStatement for updating existing Part records.
+     * @throws SQLException If there is a problem creating the statement.
+     */
+    private PreparedStatement update(Connection connection) throws SQLException {
+        String sql = "UPDATE AutoPartsStore.Parts" +
+                         " SET SupplierID = ?, CarID = ?, Name = ?, Category = ?," +
+                         " PartDescription = ?, PricePerUnit = ?, QuantityPerUnit = ?," +
+                         " Discontinued = ?, QuantityOnHand = ?, Image = ?" +
+                         " WHERE PartID = ?;";
+        PreparedStatement pStmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        int idIndex = fillParameters(pStmt);
+        pStmt.setInt(idIndex, this.getPartID());
+        return pStmt;
+    }
+
+    /**
+     * Fills a PreparedStatement with Part field data.
+     * @param pStmt The PreparedStatement to fill with data.
+     * @return The index value of where to put the next parameter (for ID).
+     * @throws SQLException If there is a problem creating the statement.
+     */
+    private int fillParameters(PreparedStatement pStmt) throws SQLException {
+        int i = 1;
+        pStmt.setInt(i++, this.getSupplier().getBusinessID());
+        pStmt.setInt(i++, this.getCar().getCarID());
+        pStmt.setString(i++, this.getName());
+        pStmt.setString(i++, this.getCategory());
+        pStmt.setString(i++, this.getDescription());
+        pStmt.setBigDecimal(i++, this.getPricePerUnit());
+        pStmt.setString(i++, this.getQuantityPerUnit());
+        pStmt.setBoolean(i++, this.isDiscontinued());
+        pStmt.setInt(i++, this.getQuantityOnHand());
+        if (this.getImage() != null) {
+            InputStream is = new ByteArrayInputStream(this.getImage());
+            pStmt.setBlob(i++, is);
+        }
+        else {
+            pStmt.setNull(i++, Types.BLOB);
+        }
+
+        return i;
+    }
+
+    @Override
+    public void setGeneratedId(Integer id) {
+        if (getPartID() < 0) {
+            setPartID(id);
+        }
     }
 }

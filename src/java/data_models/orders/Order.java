@@ -2,11 +2,11 @@ package data_models.orders;
 
 import data_models.people.Person;
 import data_models.products.Part;
+import exceptions.EmptyOrderException;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 /**
  * Order is an abstract class used for the basis of various other types of Orders.
@@ -16,7 +16,14 @@ import java.util.Map;
  */
 public abstract class Order {
 
-    public static enum Status {NEW, PROCESSED, APPROVED, IN_TRANSIT, SHIPPED, DELIVERED, RECEIVED, ON_BACK_ORDER}
+    public enum Status {NEW, PROCESSED, APPROVED, IN_TRANSIT, SHIPPED, DELIVERED, RECEIVED, ON_BACK_ORDER}
+
+    public static Map<Status, Integer> statusIntegerMap = new HashMap<Status, Integer>() {{
+        int i = 0;
+        for (Status status : Status.values()) {
+            put(status, i++);
+        }
+    }};
 
     private Integer orderID;
     private Person initiatingPerson;
@@ -25,7 +32,6 @@ public abstract class Order {
     private Date shippingDate;
     private BigDecimal shippingFee;
     private BigDecimal taxAmount;
-    private BigDecimal totalOrderAmount; // includes shipping, taxes, etc
     private Status orderStatus;
     private String notes;
 
@@ -42,9 +48,6 @@ public abstract class Order {
      * @param shippingDate The date an order was shipped.
      * @param shippingFee The total shipping fee for an order.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param orderStatus The current status of the order.
      * @param notes Any notes about the order that should be stored.
      */
@@ -55,7 +58,6 @@ public abstract class Order {
                     Date shippingDate,
                     BigDecimal shippingFee,
                     BigDecimal taxAmount,
-                    BigDecimal totalOrderAmount,
                     Status orderStatus,
                     String notes) {
         setOrderID(orderID);
@@ -65,7 +67,6 @@ public abstract class Order {
         setShippingDate(shippingDate);
         setShippingFee(shippingFee);
         setTaxAmount(taxAmount);
-        setTotalOrderAmount(totalOrderAmount);
         setOrderStatus(orderStatus);
         setNewNotes(notes);
     }
@@ -96,7 +97,10 @@ public abstract class Order {
     }
 
     /**Setter for orderedParts*/
-    public void setOrderedParts(Map<Part, Integer> orderedParts) {
+    public void setOrderedParts(Map<Part, Integer> orderedParts) throws EmptyOrderException {
+        if (orderedParts.isEmpty()) {
+            throw new EmptyOrderException();
+        }
         this.orderedParts = orderedParts;
     }
 
@@ -142,17 +146,29 @@ public abstract class Order {
 
     /**Getter for totalOrderAmount*/
     public BigDecimal getTotalOrderAmount() {
-        return totalOrderAmount;
-    }
+        BigDecimal orderAmount = new BigDecimal(0);
 
-    /**Setter for totalOrderAmount*/
-    public void setTotalOrderAmount(BigDecimal totalOrderAmount) {
-        this.totalOrderAmount = totalOrderAmount;
+        for (Part part : orderedParts.keySet()) {
+            orderAmount = orderAmount.add(part.getPricePerUnit().multiply(new BigDecimal(orderedParts.get(part))));
+        }
+        orderAmount = orderAmount.add(shippingFee);
+        orderAmount = orderAmount.add(taxAmount);
+        return orderAmount;
     }
 
     /**Getter for orderStatus*/
     public Status getOrderStatus() {
         return orderStatus;
+    }
+
+    //todo test with database
+    public static Status getOrderStatus(int value) {
+        for (Status status : statusIntegerMap.keySet()) {
+            if (statusIntegerMap.get(status).equals(value)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Status for value: " + value + " not found.");
     }
 
     /**Setter for orderStatus*/
@@ -192,5 +208,28 @@ public abstract class Order {
      */
     public void setNewNotes(String notes) {
         this.notes = notes;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder parts = new StringBuilder();
+
+        for (Part part : orderedParts.keySet()) {
+            parts.append("ID: ").append(part.getPartID())
+                .append(" Quantity: ").append(orderedParts.get(part)).append("\n");
+        }
+
+        return "Order{" +
+                   "\norderID=" + orderID +
+                   "\ninitiatingPerson=" + initiatingPerson.getIdNumber() +
+                   "\norderedParts=" + parts.toString() +
+                   "orderCreationDate=" + orderCreationDate +
+                   "\nshippingDate=" + shippingDate +
+                   "\nshippingFee=" + shippingFee +
+                   "\ntaxAmount=" + taxAmount +
+                   "\ntotalOrderAmount=" + getTotalOrderAmount() +
+                   "\norderStatus=" + orderStatus +
+                   "\nnotes='" + notes + '\'' +
+                   '}';
     }
 }

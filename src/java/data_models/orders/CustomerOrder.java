@@ -32,9 +32,6 @@ public class CustomerOrder extends Order {
      * @param orderedParts A map of parts ordered with the Key being a part and
      *                     the value being the number of those parts ordered.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param orderStatus The current status of the order.
      * @param notes Any notes about the order that should be stored.
      */
@@ -47,11 +44,10 @@ public class CustomerOrder extends Order {
                           BigDecimal shippingFee,
                           Map<Part, Integer> orderedParts,
                           BigDecimal taxAmount,
-                          BigDecimal totalOrderAmount,
                           Status orderStatus,
                           String notes) {
         super(orderID, customer, orderedParts, orderCreationDate, shippingDate,
-            shippingFee, taxAmount, totalOrderAmount, orderStatus, notes);
+            shippingFee, taxAmount, orderStatus, notes);
         setCustomer(customer);
         setShippingAddress(shippingAddress);
         setShippingProvider(shippingProvider);
@@ -72,9 +68,6 @@ public class CustomerOrder extends Order {
      * @param orderedParts A map of parts ordered with the Key being a part and
      *                     the value being the number of those parts ordered.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param notes Any notes about the order that should be stored.
      * @return a new CustomerOrder from the provided data (shipped to the Customer
      *         Address).
@@ -84,11 +77,10 @@ public class CustomerOrder extends Order {
                                           ShippingProvider shippingProvider,
                                           BigDecimal shippingFee,
                                           BigDecimal taxAmount,
-                                          BigDecimal totalOrderAmount,
                                           String notes) {
         return CustomerOrder.createNew(customer, new ShippingAddress(customer),
             shippingProvider, shippingFee, orderedParts, taxAmount,
-            totalOrderAmount, notes);
+            notes);
     }
 
     /**
@@ -108,9 +100,6 @@ public class CustomerOrder extends Order {
      * @param orderedParts A map of parts ordered with the Key being a part and
      *                     the value being the number of those parts ordered.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param notes Any notes about the order that should be stored.
      * @return a new Customer Order from the provided data (shipped to an Address
      *         differing from the Customer Address).
@@ -120,13 +109,11 @@ public class CustomerOrder extends Order {
                                           ShippingProvider shippingProvider,
                                           BigDecimal shippingFee,
                                           Map<Part, Integer> orderedParts,
-
                                           BigDecimal taxAmount,
-                                          BigDecimal totalOrderAmount,
                                           String notes) {
         return new CustomerOrder(-1, customer, new Date(), shippingAddress,
             shippingProvider, null, shippingFee, orderedParts,
-              taxAmount, totalOrderAmount, Status.NEW, notes);
+              taxAmount, Status.NEW, notes);
     }
 
     /**
@@ -143,9 +130,6 @@ public class CustomerOrder extends Order {
      * @param orderedParts A map of parts ordered with the Key being a part and
      *                     the value being the number of those parts ordered.
      * @param taxAmount The total tax amount for the order.
-     * @param totalOrderAmount The total amount of the order including the parts,
-     *                         shipping fee, and tax amount. This should be an
-     *                         all encompassing amount.
      * @param orderStatus The current status of the order.
      * @param notes Any notes about the order that should be stored.
      * @return an existing CustomerOrder from stored data (typically the database).
@@ -159,12 +143,11 @@ public class CustomerOrder extends Order {
                                                BigDecimal shippingFee,
                                                Map<Part, Integer> orderedParts,
                                                BigDecimal taxAmount,
-                                               BigDecimal totalOrderAmount,
                                                Status orderStatus,
                                                String notes) {
         return new CustomerOrder(orderID, customer, orderCreationDate,
             shippingAddress, shippingProvider, shippingDate, shippingFee,
-            orderedParts, taxAmount, totalOrderAmount, orderStatus, notes);
+            orderedParts, taxAmount, orderStatus, notes);
     }
 
     /**Getter for customer*/
@@ -204,9 +187,15 @@ public class CustomerOrder extends Order {
 
     /**
      * Method for shipping an order with the current date.
+     * A shippingProvider must be set before shipping an order.
      */
     public void shipOrder() {
-        shipOrder(new Date());
+        if (shippingProvider != null) {
+            shipOrder(new Date());
+        }
+        else {
+            throw new NullPointerException("There is no shipping provider for this order.");
+        }
     }
 
     /**
@@ -218,4 +207,5 @@ public class CustomerOrder extends Order {
         setShippingDate(shippingDate);
         setOrderStatus(Status.SHIPPED);
     }
+
 }

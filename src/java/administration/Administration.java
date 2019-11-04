@@ -388,14 +388,14 @@ public class Administration implements Serializable {
             System.out.println(ex.getMessage());
         }*/
 
- /*
+ 
         try {
             dbManager = new DatabaseManager();
-            status = ("<p style=\"color:green\">DB Connection succesfull!</p> ");
+           ;
         } catch (Exception e) {
-            status = ("<p style=\"color:red\">DB Connection not succesfull!</p> ");
+            ;
         }
-        loadEmployees();*/
+        loadEmployees();
     }
 
     private void loadEmployees() {
@@ -585,7 +585,7 @@ public class Administration implements Serializable {
                     link = "";
                 }
                 try {
-                    parts.add(new Part(partID, this.getSupplierByID(supplierID), c, name, description, category, pricePerUnit, quantityPerUnit, discontinued));
+                    parts.add(new Part(partID, this.getSupplierByID(supplierID), c, name, description, category, pricePerUnit, quantityPerUnit, discontinued,null, null));
 
                 } catch (Exception ex) {
                     status = "<p style=\"color:red\">" + ex.getMessage() + "</p>";
